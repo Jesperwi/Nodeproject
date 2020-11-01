@@ -1,15 +1,18 @@
+const { json } = require('body-parser');
 const express = require('express');
       morgan = require('morgan');
-
-const app = express();
+      app = express();
+      bodyParser = require('body-parser');
+      uuid = require('uuid');
 
 app.use('/documentation', express.static('documentation'));
-
 app.use(morgan('common'));
+
+app.use(bodyParser.json());
 
 let topMovies = [
     {
-        title: 'Harry Pantter and the Sorceres\'s Stone',
+        title: 'Harry Potter and the Sorceres\'s Stone',
         author: 'J.K. Rowling'
     },
     {
@@ -19,20 +22,60 @@ let topMovies = [
     {
         title: 'Twilight',
         author: 'Stephanie Meyer'
-    }
+    },
+    {
+      title: 'Harry Potter and the Sorceres\'s Stone',
+      author: 'J.K. Rowling'
+  },
+  {
+      title: 'Lord of the Rings',
+      author: 'J.R.R. Tolkien'
+  },
+  {
+      title: 'Twilight',
+      author: 'Stephanie Meyer'
+  },
+  {
+    title: 'Harry Potter and the Sorceres\'s Stone',
+    author: 'J.K. Rowling'
+  },
+  {
+    title: 'Lord of the Rings',
+    author: 'J.R.R. Tolkien'
+  },
+  { 
+    title: 'Twilight',
+    author: 'Stephanie Meyer'
+  }
 ];
 
 // GET requests
-app.get('/', (req, res) => {
-  res.send('Welcome to my movie app!');
+app.get('/', (req, res) => { 
+  res.send('Welcome to my myflix!');
 });
   
-app.get('/documentation', (req, res) => {                  
-  res.sendFile('public/documentation.html', { root: __dirname });
-});
   
-app.get('/movies', (req, res) => {
+app.get('/documentation', (req, res) => {
   res.json(topMovies);
+});
+
+app.get('/documentation/:title', (req, res) => {
+  res.json(topMovies.find((title) => {
+    return topMovies.title === req.params.title
+  }));
+});
+
+app.post('/documentation', (req, res) => {
+  let newMovie = req.body;
+
+  if (!newMovie.name) {
+    const message = 'Missing name in request body';
+    res.status(400).send(message);
+  } else {
+    newMovie.id = uuid.v4();
+    topMovies.push(newMovie);
+    res.status(201).send(newMovie);
+  }
 });
 
 app.use((err, req, res, next) => {
@@ -44,3 +87,6 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
   console.log('Your app is listening on port 8080.');
 });
+
+
+
