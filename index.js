@@ -11,29 +11,29 @@ app.use(morgan('common'));
 app.use(bodyParser.json());
 
 let topMovies = [
-    {
-        title: 'Harry Potter and the Sorceres\'s Stone',
-        author: 'J.K. Rowling'
-    },
-    {
-        title: 'Lord of the Rings',
-        author: 'J.R.R. Tolkien'
-    },
-    {
-        title: 'Twilight',
-        author: 'Stephanie Meyer'
-    },
-    {
-      title: 'Harry Potter and the Sorceres\'s Stone',
-      author: 'J.K. Rowling'
+  {
+    title: 'Harry Potter and the Sorceres\'s Stone',
+    author: 'J.K. Rowling'
   },
   {
-      title: 'Lord of the Rings',
-      author: 'J.R.R. Tolkien'
+    title: 'Lord of the Rings',
+    author: 'J.R.R. Tolkien'
   },
   {
-      title: 'Twilight',
-      author: 'Stephanie Meyer'
+    title: 'Twilight',
+    author: 'Stephanie Meyer'
+  },
+  {
+    title: 'Harry Potter and the Sorceres\'s Stone',
+    author: 'J.K. Rowling'
+  },
+  {
+    title: 'Lord of the Rings',
+    author: 'J.R.R. Tolkien'
+  },
+  {
+    title: 'Twilight',
+    author: 'Stephanie Meyer'
   },
   {
     title: 'Harry Potter and the Sorceres\'s Stone',
@@ -54,18 +54,21 @@ app.get('/', (req, res) => {
   res.send('Welcome to my myflix!');
 });
   
-  
 app.get('/documentation', (req, res) => {
+  res.sendFile('public/documentation.html', { root: __dirname });
+});
+
+app.get('/Movies', (req, res) => {
   res.json(topMovies);
 });
 
-app.get('/documentation/:title', (req, res) => {
+app.get('/Movies/:title', (req, res) => {
   res.json(topMovies.find((title) => {
     return topMovies.title === req.params.title
   }));
 });
 
-app.post('/documentation', (req, res) => {
+app.post('/Movie', (req, res) => {
   let newMovie = req.body;
 
   if (!newMovie.name) {
