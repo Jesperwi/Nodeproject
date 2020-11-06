@@ -1,85 +1,162 @@
 const { json } = require('body-parser');
 const express = require('express');
-      morgan = require('morgan');
-      app = express();
-      bodyParser = require('body-parser');
-      uuid = require('uuid');
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;     
+      
+  mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+  
+  morgan = require('morgan');
+  
+  app = express();
+  
+  bodyParser = require('body-parser');
+  
+  uuid = require('uuid');
 
 app.use('/documentation', express.static('documentation'));
+
 app.use(morgan('common'));
 
 app.use(bodyParser.json());
-
-let topMovies = [
-  {
-    title: 'Harry Potter and the Sorceres\'s Stone',
-    author: 'J.K. Rowling'
-  },
-  {
-    title: 'Lord of the Rings',
-    author: 'J.R.R. Tolkien'
-  },
-  {
-    title: 'Twilight',
-    author: 'Stephanie Meyer'
-  },
-  {
-    title: 'Harry Potter and the Sorceres\'s Stone',
-    author: 'J.K. Rowling'
-  },
-  {
-    title: 'Lord of the Rings',
-    author: 'J.R.R. Tolkien'
-  },
-  {
-    title: 'Twilight',
-    author: 'Stephanie Meyer'
-  },
-  {
-    title: 'Harry Potter and the Sorceres\'s Stone',
-    author: 'J.K. Rowling'
-  },
-  {
-    title: 'Lord of the Rings',
-    author: 'J.R.R. Tolkien'
-  },
-  { 
-    title: 'Twilight',
-    author: 'Stephanie Meyer'
-  }
-];
 
 // GET requests
 app.get('/', (req, res) => { 
   res.send('Welcome to my myflix!');
 });
-  
-app.get('/documentation', (req, res) => {
-  res.sendFile('public/documentation.html', { root: __dirname });
+
+app.get('/movies', (req, res) => {
+  Movies.find()
+  .then((movies) => {
+    res.status(201).json(movies);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
 });
 
-app.get('/Movies', (req, res) => {
-  res.json(topMovies);
+app.get('/movies/:Title', (req, res) => {
+  Movies.findOne({ Title: req.params.Title})
+    .then((movie) => {
+      res.status(201).json(movie);
+ })
+   .catch((err) => {
+     console.error(err);
+     res.status(500).send('Error: ' + err);
+ });
 });
 
-app.get('/Movies/:title', (req, res) => {
-  res.json(topMovies.find((title) => {
-    return topMovies.title === req.params.title
-  }));
+app.get('/movies/Genre/:Title', (req, res) => {
+  Movies.findOne({ Title : req.params.Title})
+    .then((movie) => {
+      res.status(201).json("Genre: " + movie.Genre.Name + ".Description " + movie.Genre.Description);
+ })
+   .catch((err) => {
+     console.error(err);
+     res.status(500).send('Error: ' + err);
+ });
 });
 
-app.post('/Movie', (req, res) => {
-  let newMovie = req.body;
+app.get('/movies/Directors/:Name', (req, res) => {
+  Movies.findOne({ "Director.Name" : req.params.Name})
+    .then((movie) => {
+      res.status(201).json("Name: "+ movie.Director.Name + ". Bio: " + movie.Director.Bio + " Birth: " + movie.Director.Birth);
+ })
+   .catch((err) => {
+     console.error(err);
+     res.status(500).send('Error: ' + err);
+ });
+});
 
-  if (!newMovie.name) {
-    const message = 'Missing name in request body';
-    res.status(400).send(message);
-  } else {
-    newMovie.id = uuid.v4();
-    topMovies.push(newMovie);
-    res.status(201).send(newMovie);
+app.post('/users', (req, res) => {
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+app.get('/users', (req, res) => {
+  Users.find({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+app.get('/users/:Name', (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+
+app.put('/users/:Name', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username}, { $set:
+  {
+    Username: req.body.Username,
+    Password: req.body.Password,
+    Email: req.body.Email,
+    Birthday: req.body.Birthday
   }
+},
+{ new: true }, 
+ (err, updatedUser) => {
+   if(err) {
+     console.error(err);
+     res.status(500).send('Error: ' + err);
+   } else {
+     res.json(updatedUser);
+   }
+ });
 });
+
+app.post('/users/:Username/Movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Name: req.params.Name }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

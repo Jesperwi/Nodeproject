@@ -13,13 +13,88 @@
     
     <div><ul>
         <li>Make an API</li>
-        <li>GET Retrieves a resourse </li>
-        <li>POST: Creates a resourse </li>
+        <li>get Retrieves a resourse </li>
+        <li>post: Creates a resourse </li>
         <li>request /topMovies/:title</li>
         <li>request = body parcer</li>
         <li>With GET request</li>
-    </ul></div>
+    </div></ul>
 
+    <table>
+        <td>Movies</td>
+        <td>Title Silence of lambs, The lord of the rings, Logan</td>
+        <td>description</td>
+        <td>genreid 1 2 3</td>
+        <td>genreid 1 3 3</td>
+        <td>imagepath</td>
+        <td>featured</td>
+        <tr>
+            <td>Get list of movies</td>
+            <td>/movies</td>
+            <td>get</td>
+            <td>/movies</td>
+            <td>While Frodo and Sam edge closer to Mordor with the help of the shifty Gollum, the divided fellowship makes a stand against Sauron's new ally, Saruman, and his hordes of Isengard.</td>
+            <td>With Json</td>
+        </tr>
+        <td>movie/:Title</td>
+        <td>GET</td>
+        <td>/movie/Logan</td>
+        <td>Json</td>
+        <td>"Title": "Logan",
+            "Description": "In a future where mutants are nearly extinct, an elderly and weary Logan leads a quiet life. But when Laura, a mutant child pursued by scientists, comes to him for help, he must get her to safety." </td>
+        <tr>
+            <td>Directors/:Name</td>
+            <td>GET</td>
+            <td>movies/Directors/Peter%20Jackson</td>
+            <td>Json</td>
+            <td>"Name: Peter Jackson. Bio: He is most well-known for his film adaptation of J.R.R. Tolkien's Lord of the Rings trilogy, which has won numerous awards.</td>
+        </tr>   
+        <tr>
+            <td>User register</td>
+            <td>/users</td>
+            <td>Post</td>
+            <td>Json</td>
+            <td>bakbkwea</td>
+            <td>fwfw</td>
+        </tr>
+        <tr>
+            <td>Update users</td>
+            <td>users/:Username</td>
+            <td>Put</td>
+            <td>Json</td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+<!--         
+        <tr>
+        <td>Movie favorite</td>
+        <td>/users/:Username/Movies/:MovieID</td>
+        <td>Post</td>
+        <td>/users/gregvincent/Movies/5f8053202ba736251567996b</td>
+        <td>JSON</td>
+        <td>{<br>    "FavoriteMovies": [<br>"5f8053202ba736251567996b"<br>],<br>"_id": "5f85b4f19cf40f02a8c1e74c",<br>"Username": "gregvincent",<br> "Password": "abracadabra2020",<br>"Email": "gregvincent47@gmail.com",<br>"Birthdate": "1986-06-14T04:00:00.000Z",<br>"__v": 0<br>}</td>
+      </tr>
+      <tr>
+        <td>Remove Movie</td>
+        <td>/users/:Username/Movies/:MovieID</td>
+        <td>DELETE</td>
+        <td>None</td>
+        <td>/users/gregvincent/movies/5b6c88930</td>
+        <td>JSON
+        <td>{<br>"FavoriteMovies": [ ],<br>"_id": "5f85b4f19cf40f02a8c1e74c",<br>"Username": "gregvincent",<br> "Password": "abracadabra2020",<br>"Email": "gregvincent47@gmail.com",<br>"Birthdate": "1986-06-14T04:00:00.000Z",<br>"__v": 0<br>}</td>
+      </tr>
+      <tr>
+        <td>Remove user</td>
+        <td>/users/:Username</td>
+        <td>DELETE</td>
+        <td>None</td>
+        <td>/users/gregvincent</td>
+        <td>Message</td>
+        <td>"gregvincent was successfully deregistered from myFlix."</td>
+      </tr> -->
+        </table>
 
-    </body>
+    <script src="movie_api/index.js"></script>
+</body>
 </html>
