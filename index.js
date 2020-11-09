@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
-
+const passport = require('passport');
 const Movies = Models.Movie;
 const Users = Models.User;     
       
@@ -13,20 +13,25 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
   
   bodyParser = require('body-parser');
   
+  app.use(bodyParser.json());
+
+  let auth = require('./auth')(app);
+  
+  require('./passport')
+
   uuid = require('uuid');
 
 app.use('/public', express.static('documentation'));
 
 app.use(morgan('common'));
 
-app.use(bodyParser.json());
 
 // GET requests
 app.get('/', (req, res) => { 
   res.send('Welcome to my myflix!');
 });
 
-app.get('/movies', (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false}),(req, res) => {
   Movies.find()
   .then((movies) => {
     res.status(201).json(movies);
@@ -37,7 +42,7 @@ app.get('/movies', (req, res) => {
   });
 });
 
-app.get('/movies/:Title', (req, res) => {
+app.get('/movies/:Title', passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.findOne({ Title: req.params.Title})
     .then((movie) => {
       res.status(201).json(movie);
@@ -48,7 +53,7 @@ app.get('/movies/:Title', (req, res) => {
  });
 });
 
-app.get('/movies/Genre/:Title', (req, res) => {
+app.get('/movies/Genre/:Title', passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.findOne({ Title : req.params.Title})
     .then((movie) => {
       res.status(201).json("Genre: " + movie.Genre.Name + ".Description " + movie.Genre.Description);
@@ -59,7 +64,7 @@ app.get('/movies/Genre/:Title', (req, res) => {
  });
 });
 
-app.get('/movies/Directors/:Name', (req, res) => {
+app.get('/movies/Directors/:Name',  passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.findOne({ "Director.Name" : req.params.Name})
     .then((movie) => {
       res.status(201).json("Name: "+ movie.Director.Name + ". Bio: " + movie.Director.Bio + " Birth: " + movie.Director.Birth);
@@ -70,7 +75,7 @@ app.get('/movies/Directors/:Name', (req, res) => {
  });
 });
 
-app.get('/users', (req, res) => {
+app.get('/users',(req, res)  => {
   Users.find()
     .then((users) => {
       res.json(users);
@@ -107,7 +112,8 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.get('/users/:Username', (req, res) => {
+
+app.get('/users/:Username',  passport.authenticate('jwt', { session: false}), (req, res) => {
   Users.findOne({ Username: req.params.Username })
     .then((user) => {
       res.json(user);
