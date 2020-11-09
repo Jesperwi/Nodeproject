@@ -1,4 +1,3 @@
-const { json } = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
@@ -6,7 +5,7 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;     
       
-  mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
   
   morgan = require('morgan');
   
@@ -16,7 +15,7 @@ const Users = Models.User;
   
   uuid = require('uuid');
 
-app.use('/documentation', express.static('documentation'));
+app.use('/public', express.static('documentation'));
 
 app.use(morgan('common'));
 
@@ -71,7 +70,18 @@ app.get('/movies/Directors/:Name', (req, res) => {
  });
 });
 
-app.post('/users', (req, res) => {
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+app.post('/users', (req, res) => { 
   Users.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
@@ -97,18 +107,7 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.get('/users', (req, res) => {
-  Users.find({ Username: req.params.Username })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
-app.get('/users/:Name', (req, res) => {
+app.get('/users/:Username', (req, res) => {
   Users.findOne({ Username: req.params.Username })
     .then((user) => {
       res.json(user);
@@ -119,8 +118,7 @@ app.get('/users/:Name', (req, res) => {
     });
 });
 
-
-app.put('/users/:Name', (req, res) => {
+app.put('/users/:Username', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username}, { $set:
   {
     Username: req.body.Username,
@@ -140,8 +138,8 @@ app.put('/users/:Name', (req, res) => {
  });
 });
 
-app.post('/users/:Username/Movies/:MovieID', (req, res) => {
-  Users.findOneAndUpdate({ Name: req.params.Name }, {
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
    },
    { new: true }, // This line makes sure that the updated document is returned
@@ -156,7 +154,35 @@ app.post('/users/:Username/Movies/:MovieID', (req, res) => {
 });
 
 
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $pull: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
 
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
