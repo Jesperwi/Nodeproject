@@ -2,29 +2,33 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const passport = require('passport');
+const cors = require('cors');
+const { check, validationResult } = require('express-validator');
+
 const Movies = Models.Movie;
 const Users = Models.User;     
       
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
   
-  morgan = require('morgan');
+morgan = require('morgan');
   
-  app = express();
+app = express();
   
-  bodyParser = require('body-parser');
+bodyParser = require('body-parser');
   
-  app.use(bodyParser.json());
+app.use(bodyParser.json());
 
-  let auth = require('./auth')(app);
+let auth = require('./auth')(app);
   
-  require('./passport')
+require('./passport')
 
-  uuid = require('uuid');
+uuid = require('uuid');
 
 app.use('/public', express.static('documentation'));
 
 app.use(morgan('common'));
 
+app.use(cors());
 
 // GET requests
 app.get('/', (req, res) => { 
@@ -86,7 +90,23 @@ app.get('/users',(req, res)  => {
     });
 });
 
-app.post('/users', (req, res) => { 
+//safety for users
+
+app.post('/users',
+[
+  check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+], (req, res) => { let errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() 
+    });
+  }
+
+  let hashedPassword = Users.hashPassword(req.body.Password);
+
   Users.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
@@ -111,7 +131,6 @@ app.post('/users', (req, res) => {
       res.status(500).send('Error: ' + error);
     });
 });
-
 
 app.get('/users/:Username',  passport.authenticate('jwt', { session: false}), (req, res) => {
   Users.findOne({ Username: req.params.Username })
@@ -190,14 +209,39 @@ app.delete('/users/:Username', (req, res) => {
     });
 });
 
+
+//cors usage
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ 
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
+
+
+
+
+
+
+
+
+
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-// listen for requests
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+// listening for requests
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port' + port);
 });
 
 
