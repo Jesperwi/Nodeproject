@@ -211,7 +211,7 @@ app.delete('/users/:Username', (req, res) => {
 
 
 //cors usage
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+let allowedOrigins = ['http://localhost:8080', 'https://jwmyflix.herokuapp.com/'];
 
 app.use(cors({
   origin: (origin, callback) => {
