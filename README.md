@@ -106,9 +106,15 @@
   <td>Delete</td>
   <td>None</td>
   <td>/users/makeabake</td>
-</tr> -->
+</tr>
+<tr>
+  <td>Add user</td>
+  <td>/users/:Username</td>
+  <td>Push</td>
+  <td>None</td>
+  <td>/users/lion</td>
+</tr>
 </table>
 
-<script src="movie_api/index.js"></script>
 </body>
 </html>
