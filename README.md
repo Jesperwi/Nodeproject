@@ -7,7 +7,7 @@
 </head>
 <body>
 <header>
-  <h1>This is a document</h1>
+  <h1>Notes for the creation of the API</h1>
   <p>Create an API with Node.js</p>
 </header>
 
