@@ -31,7 +31,7 @@ app.use(morgan('common'));
 
 app.use(cors());
 
-//cors usage
+ //cors usage
 let allowedOrigins = ['http://localhost:8080', 'https://jwmyflix.herokuapp.com/'];
 
 app.use(cors({
@@ -109,7 +109,7 @@ app.get('/users',(req, res)  => {
 
 app.post('/users',
 [
-  check('Username', 'Username is required').not().isEmpty(),
+    check('Username', 'Username is required').isLength({min: 3}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
@@ -162,7 +162,7 @@ app.get('/users/:Username',  (req, res) => {
 
 app.put('/users/:Username',
 [
-  check('Username', 'Username is required').not().isEmpty(),
+    check('Username', 'Username is required').isLength({min: 3}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
