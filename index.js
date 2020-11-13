@@ -48,7 +48,7 @@ app.use(cors({
 
 // GET requests
 app.get('/', (req, res) => { 
-  res.send('Welcome to my myflix!');
+  res.send('Welcome to my myflixxs!');
 });
 
 app.get('/movies', passport.authenticate('jwt', { session: false}), (req, res) => {
