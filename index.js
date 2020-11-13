@@ -4,25 +4,23 @@ const Models = require('./models.js');
 const passport = require('passport');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
+const app = express();
 
 const Movies = Models.Movie;
 const Users = Models.User;     
 
 mongoose.connect( process.env.CONNECTION_URI,
   { useNewUrlParser: true, useUnifiedTopology: true });
-console.log(process.env.CONNECTION_URI);
 
 morgan = require('morgan');
-  
-app = express();
-  
+
 bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
 
-let auth = require('./auth')(app);
+let auth = require('./auth.js')(app);
   
-require('./passport')
+require('./passport.js')
 
 uuid = require('uuid');
 
@@ -97,7 +95,8 @@ app.get('/movies/Directors/:Name',  passport.authenticate('jwt', { session: fals
 
 app.get('/users', passport.authenticate('jwt', { session: false}),(req, res)  => {
   Users.find()
-    .then((users) => {
+    .then((users) => { 
+      console.log(users)
       res.json(users);
     })
     .catch((err) => {
