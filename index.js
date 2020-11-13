@@ -10,6 +10,7 @@ const Users = Models.User;
 
 mongoose.connect( process.env.CONNECTION_URI,
   { useNewUrlParser: true, useUnifiedTopology: true });
+console.log(process.env.CONNECTION_URI);
 
 morgan = require('morgan');
   
@@ -50,7 +51,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to my myflix!');
 });
 
-app.get('/movies',('jwt', { session: false}), (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.find()
   .then((movies) => {
     res.status(201).json(movies);
