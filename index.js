@@ -93,7 +93,7 @@ app.get('/movies/Directors/:Name', (req, res) => {
  });
 });
 
-app.get('/users', (req, res)  => {
+app.get('/users',passport.authenticate('jwt', { session: false }), (req, res)  => {
   Users.find()
     .then((users) => { 
       console.log(users)
@@ -149,7 +149,7 @@ app.post('/users',
     });
 });
 
-app.get('/users/:Username',  (req, res) => {
+app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOne({ Username: req.params.Username })
     .then((user) => {
       res.json(user);
