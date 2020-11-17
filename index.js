@@ -31,7 +31,7 @@ app.use(morgan('common'));
 app.use(cors());
 
  //cors usage
-let allowedOrigins = ['http://localhost:8080', 'https://myflixjw.herokuapp.com/'];
+let allowedOrigins = ['http://localhost:8080', 'https://myflixjw.herokuapp.com/', 'https://localhost:1234'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -45,11 +45,11 @@ app.use(cors({
 }));
 
 // GET requests
-app.get('/', (req, res) => { 
+app.get('/', (req, res) => {  
   res.send('Welcome to my myflix!');
 });
 
-app.get('/movies', passport.authenticate('jwt', { session: false}), (req, res) => {
+app.get('/movies', (req, res) => {
   Movies.find()
   .then((movies) => {
     res.status(201).json(movies);
@@ -60,7 +60,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false}), (req, res) =
   });
 });
 
-app.get('/movies/:Title', passport.authenticate('jwt', { session: false}), (req, res) => {
+app.get('/movies/:Title', (req, res) => {
   Movies.findOne({ Title: req.params.Title})
     .then((movie) => {
       res.status(201).json(movie);
@@ -71,7 +71,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false}), (req,
  });
 });
 
-app.get('/movies/Genre/:Title', passport.authenticate('jwt', { session: false}), (req, res) => {
+app.get('/movies/Genre/:Title', (req, res) => {
   Movies.findOne({ Title : req.params.Title})
     .then((movie) => {
       res.status(201).json("Genre: " + movie.Genre.Name + ".Description " + movie.Genre.Description);
@@ -82,7 +82,7 @@ app.get('/movies/Genre/:Title', passport.authenticate('jwt', { session: false}),
  });
 });
 
-app.get('/movies/Directors/:Name',  passport.authenticate('jwt', { session: false}), (req, res) => {
+app.get('/movies/Directors/:Name', (req, res) => {
   Movies.findOne({ "Director.Name" : req.params.Name})
     .then((movie) => {
       res.status(201).json("Name: "+ movie.Director.Name + ". Bio: " + movie.Director.Bio + " Birth: " + movie.Director.Birth);
@@ -93,7 +93,7 @@ app.get('/movies/Directors/:Name',  passport.authenticate('jwt', { session: fals
  });
 });
 
-app.get('/users', passport.authenticate('jwt', { session: false}),(req, res)  => {
+app.get('/users', (req, res)  => {
   Users.find()
     .then((users) => { 
       console.log(users)
