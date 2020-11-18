@@ -250,10 +250,10 @@ app.delete('/users/:Username', (req, res) => {
 
 
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+// app.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).send('Something broke!');
+// });
 
 // listening for requests
 const port = process.env.PORT || 8080;
