@@ -31,7 +31,7 @@ app.use(morgan('common'));
 app.use(cors());
 
  //cors usage
-let allowedOrigins = ['http://localhost:8080', 'https://myflixjw.herokuapp.com/', 'http://localhost:1234'];
+let allowedOrigins = ['*'];
 
 app.use(cors({
   origin: (origin, callback) => {
