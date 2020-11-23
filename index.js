@@ -9,9 +9,9 @@ const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;     
 
-mongoose.connect( process.env.CONNECTION_URI,
+mongoose.connect('mongodb+srv://myFlixDBadman:jeppe@myflixdb.cvzu0.mongodb.net/myFlixDB?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true });
-
+//process.env.CONNECTION_URI,
 morgan = require('morgan');
 
 bodyParser = require('body-parser');
@@ -37,18 +37,18 @@ app.use(cors());
   next();
 });
 
-let allowedOrigins = '*';
+// let allowedOrigins = '*';
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ 
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if(!origin) return callback(null, true);
+//     if(allowedOrigins.indexOf(origin) === -1){ 
+//       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+//       return callback(new Error(message ), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 
 // GET requests
 app.get('/', (req, res) => {  
