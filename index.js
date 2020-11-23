@@ -34,7 +34,7 @@ app.use(cors());
 
 let allowedOrigins = ['http://myflixjw.herokuapp.com/login', 'http://localhost:1234', 'http://myflixjw.herokuapp.com'];
 
-Access-Control-allowedOrigins-Origin ['*'];
+Access-Control-allowedOrigins-Origin *
 
 app.use(cors({
   origin: (origin, callback) => {
