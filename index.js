@@ -29,7 +29,7 @@ app.use(express.static('public'));
 app.use(morgan('common'));
 
 app.use(cors());
-
+app.options('*', cors());
  //cors usage
 
 //  app.use((req, res, next) => {
@@ -38,6 +38,8 @@ app.use(cors());
 // });
 
 let allowedOrigins = '*';
+
+Access-Control-Allow-Origin *
 
 app.use(cors({
   origin: (origin, callback) => {
