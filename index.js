@@ -28,8 +28,8 @@ app.use(express.static('public'));
 
 app.use(morgan('common'));
 
-app.use(cors());
-app.options('*', cors());
+app.use(cors({ credentials: true, origin: true }))
+
  //cors usage
 
 //  app.use((req, res, next) => {
