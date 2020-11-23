@@ -32,8 +32,12 @@ app.use(cors());
 
  //cors usage
 
-let allowedOrigins = '*';
+ app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
+let allowedOrigins = '*';
 
 app.use(cors({
   origin: (origin, callback) => {
