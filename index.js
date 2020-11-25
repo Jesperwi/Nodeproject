@@ -9,9 +9,9 @@ const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;     
 
-mongoose.connect('mongodb+srv://myFlixDBadman:jeppe@myflixdb.cvzu0.mongodb.net/myFlixDB?retryWrites=true&w=majority',
+mongoose.connect(process.env.CONNECTION_URI,
   { useNewUrlParser: true, useUnifiedTopology: true });
-//process.env.CONNECTION_URI,
+
 morgan = require('morgan');
 
 bodyParser = require('body-parser');
