@@ -160,12 +160,13 @@ app.get('/users/:Username',  (req, res) => {
 });
 // Edit a user
 app.put('/users/:Username', (req, res) => {
-  console.log('i was run');
-  console.log(req.body.Username, req.body.Password, req.body.Email, req.body.Birthday);
+
+  let hashedPassword = Users.hashPassword(req.body.Password);
+
   Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
       Username: req.body.Username,
-      Password: req.body.Password,
+      Password: hashedPassword,
       Email: req.body.Email,
       Birthday: req.body.Birthday
     }
