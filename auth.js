@@ -1,3 +1,4 @@
+//** Password for JWT */
 const jwtSecret = 'jesper';
 
 const jwt = require('jsonwebtoken'),
@@ -13,7 +14,8 @@ let generateJWTToken = (user) => {
     });
 };
 
-module.exports = (router) => {
+//** Routing to the login page where it will post user information */
+exports = (router) => {
     console.log('hej')
     router.post('/login', (req,res) => { passport.authenticate( 'local',
      {session: false},

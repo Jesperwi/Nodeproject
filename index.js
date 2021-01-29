@@ -32,7 +32,9 @@ app.use(cors());
 
  //cors usage
 let allowedOrigins = ['http://localhost:8080', 'https://myflixjw.netlify.app', 'http://localhost:1234', 'https://myflixjw.herokuapp.com/', 'http://localhost:4200', 'https://localhost:4200'];
-
+/**
+ * CORS is used as a security for the api.
+ */
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
@@ -44,11 +46,12 @@ app.use(cors({
   }
 }));
 
-// GET requests
+//** GET requests from heroku api*/ 
 app.get('/', (req, res) => { 
   res.send('Welcome to my myflix!');
 });
 
+//**GET request to get movies collection, password auth with JWT */ 
 app.get('/movies', passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.find()
   .then((movies) => {
@@ -60,6 +63,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false}), (req, res) =
   });
 });
 
+//**GET request to get a single movie */ 
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.findOne({ Title: req.params.Title})
     .then((movie) => {
@@ -71,6 +75,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false}), (req,
  });
 });
 
+//** GET request to get one genre title from the api */
 app.get('/movies/Genre/:Title', passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.findOne({ Title : req.params.Title})
     .then((movie) => {
@@ -82,6 +87,7 @@ app.get('/movies/Genre/:Title', passport.authenticate('jwt', { session: false}),
  });
 });
 
+//** GET request to get a directors name from the api */
 app.get('/movies/Directors/:Name',  passport.authenticate('jwt', { session: false}), (req, res) => {
   Movies.findOne({ "Director.Name" : req.params.Name})
     .then((movie) => {
@@ -93,6 +99,7 @@ app.get('/movies/Directors/:Name',  passport.authenticate('jwt', { session: fals
  });
 });
 
+//** GET request that calls the users collection */
 app.get('/users', passport.authenticate('jwt', { session: false}),(req, res)  => {
   Users.find()
     .then((users) => { 
@@ -105,7 +112,7 @@ app.get('/users', passport.authenticate('jwt', { session: false}),(req, res)  =>
     });
 });
 
-// Create a new user
+//** Post request that creates a new user */
 app.post('/users',
 [
     check('Username', 'Username is required').isLength({min: 3}),
@@ -120,7 +127,7 @@ app.post('/users',
     return res.status(422).json({ errors: errors.array() 
     });
   }
-
+//** HashedPassword gets created */
   let hashedPassword = Users.hashPassword(req.body.Password);
 
   Users.findOne({ Username: req.body.Username })
@@ -148,6 +155,7 @@ app.post('/users',
     });
 });
 
+//** GET request to get the specific user from the api */
 app.get('/users/:Username',  (req, res) => {
   Users.findOne({ Username: req.params.Username })
     .then((user) => {
@@ -158,7 +166,8 @@ app.get('/users/:Username',  (req, res) => {
       res.status(500).send('Error: ' + err);
     });
 });
-// Edit a user
+
+//** PUT request to edit a user in the api */
 app.put('/users/:Username', (req, res) => {
 
   let hashedPassword = Users.hashPassword(req.body.Password);
@@ -182,6 +191,7 @@ app.put('/users/:Username', (req, res) => {
   });
 });
 
+//** POST request the add a movie to the users api collection */
 app.post('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
@@ -197,6 +207,7 @@ app.post('/users/:Username/movies/:MovieID', (req, res) => {
   });
 });
 
+//** DELETE request that removes a movie from the users collection api */
 app.delete('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $pull: { FavoriteMovies: req.params.MovieID }
@@ -212,6 +223,7 @@ app.delete('/users/:Username/movies/:MovieID', (req, res) => {
   });
 });
 
+//** DELETE request that removes the user from the users collection in the api */
 app.delete('/users/:Username', (req, res) => {
   Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
@@ -228,13 +240,13 @@ app.delete('/users/:Username', (req, res) => {
 });
 
 
-
+//** mounting the middlewares function to see if everything is working */
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-// listening for requests
+//** listening for request and to make sure its working */
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on Port' + port);
