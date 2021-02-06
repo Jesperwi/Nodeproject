@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
-const passport = require('passport');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const app = express();
+
 
 const Movies = Models.Movie;
 const Users = Models.User;     
@@ -17,14 +17,14 @@ morgan = require('morgan');
 bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
-  
+let auth = require('./auth.js');
+
+const passport = require('passport');  
 require('./passport.js');
 
 uuid = require('uuid');
 
 app.use(express.static('public'));
-
-let auth = require('./auth')(app);
 
 app.use(morgan('common'));
 
