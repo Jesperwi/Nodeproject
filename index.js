@@ -9,8 +9,7 @@ const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;     
 
-mongoose.connect( process.env.CONNECTION_URI,
-  { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect( process.env.CONNECTION_URI ,{ useNewUrlParser: true, useUnifiedTopology: true });
 
 morgan = require('morgan');
 
@@ -18,8 +17,6 @@ bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
 
-auth = require('./auth.js');
-  
 require('./passport.js')
 
 uuid = require('uuid');
@@ -53,6 +50,8 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+
+let auth = require('./auth')(app);
 
 //** GET requests from heroku api*/ 
 app.get('/', (req, res) => { 
