@@ -17,14 +17,14 @@ morgan = require('morgan');
 bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
-
-let auth = require('./auth.js')(app);
   
-require('./passport.js')
+require('./passport.js');
 
 uuid = require('uuid');
 
 app.use(express.static('public'));
+
+let auth = require('./auth')(app);
 
 app.use(morgan('common'));
 
