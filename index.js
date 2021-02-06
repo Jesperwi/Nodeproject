@@ -9,7 +9,8 @@ const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;     
 
-mongoose.connect( process.env.CONNECTION_URI ,{ useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect( process.env.CONNECTION_URI,
+  { useNewUrlParser: true, useUnifiedTopology: true });
 
 morgan = require('morgan');
 
@@ -17,6 +18,8 @@ bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
 
+let auth = require('./auth.js')(app);
+  
 require('./passport.js')
 
 uuid = require('uuid');
@@ -28,18 +31,10 @@ app.use(morgan('common'));
 app.use(cors());
 
  //cors usage
-let allowedOrigins = ['http://localhost:8080', 
-'https://myflixjw.herokuapp.com/login', 
-'https://myflixjw.netlify.app', 
-'http://myflixjw.netlify.app', 
-'http://localhost:1234', 
-'https://myflixjw.herokuapp.com/',
-'http://localhost:4200', 'https://localhost:4200'];
-
+let allowedOrigins = ['http://localhost:8080', 'https://myflixjw.netlify.app', 'http://localhost:1234', 'https://myflixjw.herokuapp.com/', 'http://localhost:4200', 'https://localhost:4200'];
 /**
  * CORS is used as a security for the api.
  */
-
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
@@ -50,8 +45,6 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-
-let auth = require('./auth')(app);
 
 //** GET requests from heroku api*/ 
 app.get('/', (req, res) => { 
