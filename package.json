@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jesperwi/Nodeproject.git"
+    "url": "git+https://github.com/Jesperwi/myflix-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Jesperwi/Nodeproject/issues"
+    "url": "https://github.com/Jesperwi/myflix-api/issues"
   },
-  "homepage": "https://github.com/Jesperwi/Nodeproject#readme",
+  "homepage": "https://github.com/Jesperwi/myflix-api#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
