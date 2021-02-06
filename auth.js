@@ -1,13 +1,13 @@
 //** Password for JWT */
 const jwtSecret = 'jesper';
 
-import { sign } from 'jsonwebtoken';
-import { authenticate } from 'passport';
+const jwt = require('jsonwebtoken'),
+    passport = require('passport');
 
-import './passport.js';
+require('./passport.js');
 
 let generateJWTToken = (user) => {
-    return sign(user, jwtSecret, {
+    return jwt.sign(user, jwtSecret, {
         subject: user.Username,
         expiresIn: '7d',
         algorithm: 'HS256'
@@ -17,7 +17,7 @@ let generateJWTToken = (user) => {
 //** Routing to the login page where it will post user information */
 exports = (router) => {
     console.log('hej')
-    router.post('/login', (req,res) => { authenticate( 'local',
+    router.post('/login', (req,res) => { passport.authenticate( 'local',
      {session: false},
   (error, user, info) => {
       res.header('Access-Control-Allow-Origin', '*');
