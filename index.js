@@ -17,7 +17,8 @@ morgan = require('morgan');
 bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
-let auth = require('./auth.js');
+
+let auth = require('./auth.js')(app);
 
 const passport = require('passport');  
 require('./passport.js');
