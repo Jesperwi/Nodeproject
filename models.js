@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+import { Schema, model } from 'mongoose';
+import { hashSync, compareSync } from 'bcrypt';
 /**
  * movieSchema making the structure for the movie api that can be requested later.
  */
-let movieSchema = mongoose.Schema({
+let movieSchema = Schema({
     Title:{type: String, required: true},
     Description: {type: String, required: true},
     Genre: {
@@ -26,31 +26,33 @@ let movieSchema = mongoose.Schema({
  * @param {string} Birthday will be created
  * @param {string} FavoriteMovies will be created
  */
-let userSchema = mongoose.Schema({
+let userSchema = Schema({
     Username: {type: String, required: true},
     Password: {type: String, required: true},
     Email: {type: String, required: true},
     Birthday: Date,
-    FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie'}]
+    FavoriteMovies: [{ type: Schema.Types.ObjectId, ref: 'Movie'}]
 });
 /**
  * 
  * @param {string} password will be hashed for security reasons.
  */
 userSchema.statics.hashPassword = (password) => {
-    return bcrypt.hashSync(password, 10);
+    return hashSync(password, 10);
 };
 /**
  * 
  * @param {string} password this function validates if its right or not.
  */
 userSchema.methods.validatePassword = function(password) {
-    return bcrypt.compareSync(password, this.Password);
+    return compareSync(password, this.Password);
 };
 /** Making the collections throught the mongoose model. */
-let Movie = mongoose.model('movies', movieSchema);
-let User = mongoose.model('users', userSchema);
+let Movie = model('movies', movieSchema);
+let User = model('users', userSchema);
 
-module.exports.Movie = Movie;
-module.exports.User = User;
+const _Movie = Movie;
+export { _Movie as Movie };
+const _User = User;
+export { _User as User };
 
