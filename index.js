@@ -18,7 +18,7 @@ bodyParser = require('body-parser');
   
 app.use(bodyParser.json());
 
-let auth = require('./auth.js')(app);
+auth = require('./auth.js');
   
 require('./passport.js')
 
